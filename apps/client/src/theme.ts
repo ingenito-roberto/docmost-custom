@@ -42,11 +42,16 @@ const red: MantineColorsTuple = [
 ];
 
 export const theme = createTheme({
-  // Body font: Outfit — clean, geometric, warm personality
-  fontFamily: "'Outfit', sans-serif",
-  // Heading font: Playfair Display — elegant serif, pairs well with Outfit
-  headings: {
-    fontFamily: "'Playfair Display', Georgia, serif",
+  // Body and Heading font: Lora (Puro stile libro/romanzo, tutto serif)
+  fontFamily: "'Lora', Georgia, serif",
+  headings: { fontFamily: "'Lora', Georgia, serif" },
+
+  fontSizes: {
+    xs: "0.85rem",
+    sm: "0.95rem",
+    md: "1.125rem", // Aumentato a 18px per una lettura più confortevole del body
+    lg: "1.25rem",
+    xl: "1.5rem",
   },
   primaryColor: "blue",
   colors: {
