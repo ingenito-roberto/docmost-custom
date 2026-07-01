@@ -629,20 +629,20 @@ export class PageRepo {
         // seed: the page itself
         db
           .selectFrom('pages')
-          .select(['id', 'parentPageId', 'isLocked'])
+          .select(['id', 'parentPageId', 'isLocked', 'type'])
           .where('id', '=', pageId)
           .where('deletedAt', 'is', null)
           .unionAll((exp) =>
             // walk upward one level at a time
             exp
               .selectFrom('pages as p')
-              .select(['p.id', 'p.parentPageId', 'p.isLocked'])
+              .select(['p.id', 'p.parentPageId', 'p.isLocked', 'p.type'])
               .innerJoin('ancestors as a', 'p.id', 'a.parentPageId')
               .where('p.deletedAt', 'is', null),
           ),
       )
       .selectFrom('ancestors')
-      .select(['id', 'isLocked'])
+      .select(['id', 'isLocked', 'type'])
       // Only return rows that are locked — avoids scanning the whole subtree
       .where('isLocked', '=', true)
       .execute();
@@ -651,14 +651,18 @@ export class PageRepo {
       return { effectivelyLocked: false };
     }
 
-    // The first locked row that is NOT the page itself is an ancestor lock.
-    const ancestorLock = rows.find((r) => r.id !== pageId);
+    // The first locked row that is NOT the page itself MUST be a collection to cascade the lock.
+    const ancestorLock = rows.find((r) => r.id !== pageId && r.type === 'collection');
     const selfLocked = rows.some((r) => r.id === pageId);
 
-    return {
-      effectivelyLocked: true,
-      lockedByAncestorId: !selfLocked && ancestorLock ? ancestorLock.id : undefined,
-    };
+    if (ancestorLock || selfLocked) {
+      return {
+        effectivelyLocked: true,
+        lockedByAncestorId: ancestorLock?.id,
+      };
+    }
+
+    return { effectivelyLocked: false };
   }
 
   /** Directly set the isLocked flag on a single page (no cascade). */
