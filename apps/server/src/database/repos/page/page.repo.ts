@@ -17,6 +17,13 @@ import { SpaceMemberRepo } from '@docmost/db/repos/space/space-member.repo';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EventName } from '../../../common/events/event.contants';
 
+export interface LockStatus {
+  /** True if the page (or any collection ancestor) is locked */
+  effectivelyLocked: boolean;
+  /** The id of the ancestor whose isLocked=true triggered the lock, if any */
+  lockedByAncestorId?: string;
+}
+
 @Injectable()
 export class PageRepo {
   constructor(
@@ -604,5 +611,67 @@ export class PageRepo {
         .where('isRestricted', '=', false)
         .execute()
     );
+  }
+
+  /**
+   * Determines whether a page is effectively locked by walking the ancestor
+   * chain with a single recursive CTE. A page is effectively locked when it
+   * itself OR any ancestor has `is_locked = true`.
+   *
+   * Returns { effectivelyLocked, lockedByAncestorId } where
+   * `lockedByAncestorId` is set only when a *different* ancestor is responsible
+   * (i.e. the lock is inherited rather than direct).
+   */
+  async isPageEffectivelyLocked(pageId: string): Promise<LockStatus> {
+    const rows = await this.db
+      .withRecursive('ancestors', (db) =>
+        // seed: the page itself
+        db
+          .selectFrom('pages')
+          .select(['id', 'parentPageId', 'isLocked'])
+          .where('id', '=', pageId)
+          .where('deletedAt', 'is', null)
+          .unionAll((exp) =>
+            // walk upward one level at a time
+            exp
+              .selectFrom('pages as p')
+              .select(['p.id', 'p.parentPageId', 'p.isLocked'])
+              .innerJoin('ancestors as a', 'p.id', 'a.parentPageId')
+              .where('p.deletedAt', 'is', null),
+          ),
+      )
+      .selectFrom('ancestors')
+      .select(['id', 'isLocked'])
+      // Only return rows that are locked — avoids scanning the whole subtree
+      .where('isLocked', '=', true)
+      .execute();
+
+    if (rows.length === 0) {
+      return { effectivelyLocked: false };
+    }
+
+    // The first locked row that is NOT the page itself is an ancestor lock.
+    const ancestorLock = rows.find((r) => r.id !== pageId);
+    const selfLocked = rows.some((r) => r.id === pageId);
+
+    return {
+      effectivelyLocked: true,
+      lockedByAncestorId: !selfLocked && ancestorLock ? ancestorLock.id : undefined,
+    };
+  }
+
+  /** Directly set the isLocked flag on a single page (no cascade). */
+  async togglePageLock(
+    pageId: string,
+    isLocked: boolean,
+    trx?: KyselyTransaction,
+  ): Promise<Page> {
+    const db = dbOrTx(this.db, trx);
+    return db
+      .updateTable('pages')
+      .set({ isLocked, updatedAt: new Date() })
+      .where('id', '=', pageId)
+      .returning(this.baseFields)
+      .executeTakeFirst();
   }
 }

@@ -127,6 +127,20 @@ export class PersistenceExtension implements Extension {
           return;
         }
 
+        // Enforce page lock: discard Yjs updates for effectively-locked pages.
+        // We check inside the transaction so we use a consistent snapshot.
+        const lockStatus = await this.pageRepo.isPageEffectivelyLocked(pageId);
+        if (lockStatus.effectivelyLocked) {
+          this.logger.warn(
+            `Discarding Yjs update for locked page ${pageId}` +
+              (lockStatus.lockedByAncestorId
+                ? ` (inherited from ancestor ${lockStatus.lockedByAncestorId})`
+                : ''),
+          );
+          page = null;
+          return;
+        }
+
         if (isDeepStrictEqual(tiptapJson, page.content)) {
           page = null;
           return;

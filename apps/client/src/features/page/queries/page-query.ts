@@ -21,6 +21,7 @@ import {
   getAllSidebarPages,
   getDeletedPages,
   restorePage,
+  togglePageLock,
 } from "@/features/page/services/page-service";
 import {
   IMovePage,
@@ -112,6 +113,29 @@ export function useUpdatePageMutation() {
     mutationFn: (data) => updatePage(data),
     onSuccess: (data) => {
       updatePageData(data);
+    },
+  });
+}
+
+export function useTogglePageLockMutation() {
+  const { t } = useTranslation();
+  return useMutation<IPage, Error, { pageId: string; isLocked: boolean }>({
+    mutationFn: ({ pageId, isLocked }) => togglePageLock(pageId, isLocked),
+    onSuccess: (updatedPage) => {
+      // Patch both cache keys so the UI reflects the new lock state immediately
+      const patchCache = (cached: IPage | undefined) =>
+        cached ? { ...cached, isLocked: updatedPage.isLocked } : cached;
+      queryClient.setQueryData<IPage>(["pages", updatedPage.id], patchCache);
+      queryClient.setQueryData<IPage>(["pages", updatedPage.slugId], patchCache);
+
+      notifications.show({
+        message: updatedPage.isLocked
+          ? t("Page locked — now read-only")
+          : t("Page unlocked — editing enabled"),
+      });
+    },
+    onError: () => {
+      notifications.show({ message: t("Failed to change lock status"), color: "red" });
     },
   });
 }

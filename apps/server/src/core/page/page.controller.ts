@@ -42,6 +42,7 @@ import { DeletedPageDto } from './dto/deleted-page.dto';
 import { BacklinksListDto } from './dto/backlink.dto';
 import { LabelService } from '../label/label.service';
 import { AddLabelsDto, RemoveLabelDto } from '../label/dto/label.dto';
+import { ToggleLockDto } from './dto/toggle-lock.dto';
 import {
   jsonToHtml,
   jsonToMarkdown,
@@ -281,6 +282,24 @@ export class PageController {
       user,
     );
 
+    // Enforce lock: reject content changes if the page (or any ancestor) is locked.
+    // Title/icon/coverPhoto updates are allowed even on a locked page so that
+    // space admins can still rename locked pages without unlocking them first.
+    const isContentUpdate =
+      updatePageDto.content !== undefined ||
+      updatePageDto.operation !== undefined;
+
+    if (isContentUpdate) {
+      const lockStatus = await this.pageRepo.isPageEffectivelyLocked(page.id);
+      if (lockStatus.effectivelyLocked) {
+        throw new ForbiddenException(
+          lockStatus.lockedByAncestorId
+            ? `This page is read-only because an ancestor page (${lockStatus.lockedByAncestorId}) is locked`
+            : 'This page is locked and cannot be edited',
+        );
+      }
+    }
+
     const updatedPage = await this.pageService.update(
       page,
       updatePageDto,
@@ -302,6 +321,37 @@ export class PageController {
     }
 
     return { ...updatedPage, permissions };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('toggle-lock')
+  async toggleLock(
+    @Body() dto: ToggleLockDto,
+    @AuthUser() user: User,
+  ) {
+    const page = await this.pageRepo.findById(dto.pageId);
+    if (!page || page.deletedAt) {
+      throw new NotFoundException('Page not found');
+    }
+
+    // Only users with edit permission on the page can lock/unlock it.
+    await this.pageAccessService.validateCanEdit(page, user);
+
+    const updated = await this.pageRepo.togglePageLock(dto.pageId, dto.isLocked);
+
+    this.auditService.log({
+      event: dto.isLocked ? AuditEvent.PAGE_RESTRICTED : AuditEvent.PAGE_RESTRICTION_REMOVED,
+      resourceType: AuditResource.PAGE,
+      resourceId: page.id,
+      spaceId: page.spaceId,
+      changes: {
+        before: { isLocked: page.isLocked },
+        after: { isLocked: dto.isLocked },
+      },
+      metadata: { title: getPageTitle(page.title) },
+    });
+
+    return updated;
   }
 
   @HttpCode(HttpStatus.OK)

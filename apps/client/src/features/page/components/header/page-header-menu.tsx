@@ -9,6 +9,8 @@ import {
   IconHistory,
   IconLink,
   IconList,
+  IconLock,
+  IconLockOpen,
   IconMarkdown,
   IconMessage,
   IconPrinter,
@@ -58,6 +60,7 @@ import {
   useWatchPageMutation,
   useUnwatchPageMutation,
 } from "@/features/page/queries/watcher-query";
+import { useTogglePageLockMutation } from "@/features/page/queries/page-query";
 
 interface PageHeaderMenuProps {
   readOnly?: boolean;
@@ -166,6 +169,7 @@ function PageActionMenu({ readOnly }: PageActionMenuProps) {
   const { data: watchStatus } = useWatchStatusQuery(page?.id);
   const watchPage = useWatchPageMutation();
   const unwatchPage = useUnwatchPageMutation();
+  const toggleLock = useTogglePageLockMutation();
 
   const handleCopyLink = () => {
     const pageUrl =
@@ -324,6 +328,20 @@ function PageActionMenu({ readOnly }: PageActionMenuProps) {
           >
             {t("Print PDF")}
           </Menu.Item>
+
+          {!readOnly && (
+            <>
+              <Menu.Divider />
+              <Menu.Item
+                leftSection={page?.isLocked ? <IconLockOpen size={16} /> : <IconLock size={16} />}
+                onClick={() =>
+                  toggleLock.mutate({ pageId: page.id, isLocked: !page?.isLocked })
+                }
+              >
+                {page?.isLocked ? t("Unlock page") : t("Lock page")}
+              </Menu.Item>
+            </>
+          )}
 
           {!readOnly && (
             <>

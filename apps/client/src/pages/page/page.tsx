@@ -18,6 +18,8 @@ import { BaseView } from "@/ee/base/components/base-view";
 import { useHasFeature } from "@/ee/hooks/use-feature";
 import { Feature } from "@/ee/features";
 import { getPageTitle } from "@/features/page/page.utils";
+import { LockedPageBanner } from "@/features/page/components/locked-page-banner";
+
 const MemoizedFullEditor = React.memo(FullEditor);
 const MemoizedTitleEditor = React.memo(TitleEditor);
 const MemoizedPageHeader = React.memo(PageHeader);
@@ -64,6 +66,14 @@ function PageContent({ pageSlug }: { pageSlug: string | undefined }) {
     canEdit ||
     (space?.settings?.comments?.allowViewerComments === true);
 
+  // Lock state: a page is effectively locked when isLocked=true on itself.
+  // Inherited lock (from a collection ancestor, Task 2) is enforced server-side;
+  // the banner will be extended with ancestor info once Task 2 lands.
+  const isDirectlyLocked = page?.isLocked === true;
+  const effectivelyLocked = isDirectlyLocked;
+  // canEdit already accounts for space permissions; we layer the lock on top.
+  const editableWithLock = canEdit && !effectivelyLocked;
+
   if (isLoading) {
     return <></>;
   }
@@ -104,9 +114,6 @@ function PageContent({ pageSlug }: { pageSlug: string | undefined }) {
         style={{
           display: "flex",
           flexDirection: "column",
-          // Height: see `.base-page-root` in core.css.
-          // Clear the fixed PageHeader (breadcrumb) plus a little extra so the
-          // pinned column-header row isn't tucked half under it.
           paddingTop: "calc(var(--page-header-height) + 6px)",
         }}
       >
@@ -165,6 +172,12 @@ function PageContent({ pageSlug }: { pageSlug: string | undefined }) {
 
         <MemoizedPageHeader readOnly={!canEdit} />
 
+        {effectivelyLocked && (
+          <div style={{ maxWidth: 860, margin: "0 auto", padding: "0 24px" }}>
+            <LockedPageBanner directLock={isDirectlyLocked} />
+          </div>
+        )}
+
         <MemoizedFullEditor
           key={page.id}
           pageId={page.id}
@@ -172,7 +185,7 @@ function PageContent({ pageSlug }: { pageSlug: string | undefined }) {
           content={page.content}
           slugId={page.slugId}
           spaceSlug={page?.space?.slug}
-          editable={canEdit}
+          editable={editableWithLock}
           creator={page.creator}
           contributors={page.contributors}
           canComment={canComment}

@@ -10,6 +10,8 @@ import {
   IconDotsVertical,
   IconFileExport,
   IconLink,
+  IconLock,
+  IconLockOpen,
   IconStar,
   IconStarFilled,
   IconTrash,
@@ -36,6 +38,7 @@ import { treeModel } from "@/features/page/tree/model/tree-model";
 import { useTreeMutation } from "@/features/page/tree/hooks/use-tree-mutation.ts";
 import type { SpaceTreeNode } from "@/features/page/tree/types.ts";
 import classes from "@/features/page/tree/styles/tree.module.css";
+import { useTogglePageLockMutation } from "@/features/page/queries/page-query";
 
 export interface NodeMenuProps {
   node: SpaceTreeNode;
@@ -64,6 +67,7 @@ export function NodeMenu({ node, canEdit }: NodeMenuProps) {
   const addFavorite = useAddFavoriteMutation();
   const removeFavorite = useRemoveFavoriteMutation();
   const isFavorited = favoriteIds.has(node.id);
+  const toggleLock = useTogglePageLockMutation();
 
   const handleCopyLink = () => {
     const pageUrl =
@@ -215,6 +219,17 @@ export function NodeMenu({ node, canEdit }: NodeMenuProps) {
                 }}
               >
                 {t("Copy to space")}
+              </Menu.Item>
+
+              <Menu.Item
+                leftSection={node.isLocked ? <IconLockOpen size={16} /> : <IconLock size={16} />}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleLock.mutate({ pageId: node.id, isLocked: !node.isLocked });
+                }}
+              >
+                {node.isLocked ? t("Unlock page") : t("Lock page")}
               </Menu.Item>
 
               <Menu.Divider />

@@ -32,6 +32,11 @@ export async function updatePage(data: Partial<IPageInput>): Promise<IPage> {
   return req.data;
 }
 
+export async function togglePageLock(pageId: string, isLocked: boolean): Promise<IPage> {
+  const req = await api.post<IPage>("/pages/toggle-lock", { pageId, isLocked });
+  return req.data;
+}
+
 export async function deletePage(pageId: string, permanentlyDelete = false): Promise<void> {
   await api.post("/pages/delete", { pageId, permanentlyDelete });
 }
