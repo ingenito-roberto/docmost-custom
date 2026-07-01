@@ -2,7 +2,7 @@ import { markInputRule } from "@tiptap/core";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Code } from "@tiptap/extension-code";
 import { TextAlign } from "@tiptap/extension-text-align";
-import { TaskList, TaskItem } from "@tiptap/extension-list";
+import { TaskList, TaskItem, ListItem } from "@tiptap/extension-list";
 import { Placeholder, CharacterCount, UndoRedo } from "@tiptap/extensions";
 import { Superscript } from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
@@ -214,7 +214,36 @@ export const mainExtensions = [
   TextAlign.configure({ types: ["heading", "paragraph"] }),
   Indent,
   TaskList,
-  TaskItem.configure({
+  ListItem.extend({
+    content: "block+",
+    addKeyboardShortcuts() {
+      const parentShortcuts = this.parent?.() || {};
+      return {
+        ...parentShortcuts,
+        "Shift-Enter": () => {
+          if (this.editor.isActive('listItem')) {
+            return this.editor.commands.splitBlock();
+          }
+          return false;
+        },
+      };
+    },
+  }),
+  TaskItem.extend({
+    content: "block+",
+    addKeyboardShortcuts() {
+      const parentShortcuts = this.parent?.() || {};
+      return {
+        ...parentShortcuts,
+        "Shift-Enter": () => {
+          if (this.editor.isActive('taskItem')) {
+            return this.editor.commands.splitBlock();
+          }
+          return false;
+        },
+      };
+    },
+  }).configure({
     nested: true,
   }),
   LinkExtension.configure({
