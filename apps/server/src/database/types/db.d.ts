@@ -330,6 +330,7 @@ export interface Pages {
   textContent: string | null;
   title: string | null;
   tsv: string | null;
+  type: Generated<string>;
   updatedAt: Generated<Timestamp>;
   workspaceId: string;
   ydoc: Buffer | null;

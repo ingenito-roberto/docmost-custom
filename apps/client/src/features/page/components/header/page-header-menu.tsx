@@ -5,7 +5,9 @@ import {
   IconDots,
   IconEye,
   IconEyeOff,
+  IconFileDescription,
   IconFileExport,
+  IconFolderPlus,
   IconHistory,
   IconLink,
   IconList,
@@ -26,7 +28,7 @@ import { historyAtoms } from "@/features/page-history/atoms/history-atoms.ts";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { useClipboard } from "@/hooks/use-clipboard";
 import { useParams } from "react-router-dom";
-import { usePageQuery } from "@/features/page/queries/page-query.ts";
+import { usePageQuery, useUpdatePageMutation } from "@/features/page/queries/page-query.ts";
 import { buildPageUrl } from "@/features/page/page.utils.ts";
 import { notifications } from "@mantine/notifications";
 import { getAppUrl } from "@/lib/config.ts";
@@ -150,6 +152,7 @@ function PageActionMenu({ readOnly }: PageActionMenuProps) {
   });
   const { openDeleteModal } = useDeletePageModal();
   const { handleDelete } = useTreeMutation(page?.spaceId ?? "");
+  const updatePageMutation = useUpdatePageMutation();
   const [exportOpened, { open: openExportModal, close: closeExportModal }] =
     useDisclosure(false);
   const [
@@ -332,6 +335,18 @@ function PageActionMenu({ readOnly }: PageActionMenuProps) {
           {!readOnly && (
             <>
               <Menu.Divider />
+              <Menu.Item
+                leftSection={page?.type === 'collection' ? <IconFileDescription size={16} /> : <IconFolderPlus size={16} />}
+                onClick={() => {
+                  updatePageMutation.mutate({
+                    pageId: page.id,
+                    type: page?.type === 'collection' ? 'page' : 'collection'
+                  });
+                }}
+              >
+                {page?.type === 'collection' ? t("Turn into page") : t("Turn into collection")}
+              </Menu.Item>
+
               <Menu.Item
                 leftSection={page?.isLocked ? <IconLockOpen size={16} /> : <IconLock size={16} />}
                 onClick={() =>

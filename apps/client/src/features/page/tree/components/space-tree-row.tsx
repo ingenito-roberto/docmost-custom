@@ -7,6 +7,7 @@ import {
   IconChevronDown,
   IconChevronRight,
   IconFileDescription,
+  IconFolder,
   IconPlus,
   IconPointFilled,
   IconTable,
@@ -167,6 +168,8 @@ export function SpaceTreeRow({
               node.icon
             ) : node.isBase ? (
               <IconTable size={18} />
+            ) : node.type === "collection" ? (
+              <IconFolder size={18} />
             ) : (
               <IconFileDescription size="18" />
             )

@@ -19,6 +19,7 @@ import { useHasFeature } from "@/ee/hooks/use-feature";
 import { Feature } from "@/ee/features";
 import { getPageTitle } from "@/features/page/page.utils";
 import { LockedPageBanner } from "@/features/page/components/locked-page-banner";
+import { CollectionView } from "@/features/page/components/collection-view";
 
 const MemoizedFullEditor = React.memo(FullEditor);
 const MemoizedTitleEditor = React.memo(TitleEditor);
@@ -178,18 +179,22 @@ function PageContent({ pageSlug }: { pageSlug: string | undefined }) {
           </div>
         )}
 
-        <MemoizedFullEditor
-          key={page.id}
-          pageId={page.id}
-          title={page.title}
-          content={page.content}
-          slugId={page.slugId}
-          spaceSlug={page?.space?.slug}
-          editable={editableWithLock}
-          creator={page.creator}
-          contributors={page.contributors}
-          canComment={canComment}
-        />
+        {page.type === 'collection' ? (
+          <CollectionView page={page} />
+        ) : (
+          <MemoizedFullEditor
+            key={page.id}
+            pageId={page.id}
+            title={page.title}
+            content={page.content}
+            slugId={page.slugId}
+            spaceSlug={page?.space?.slug}
+            editable={editableWithLock}
+            creator={page.creator}
+            contributors={page.contributors}
+            canComment={canComment}
+          />
+        )}
         <MemoizedHistoryModal pageId={page.id} />
       </div>
     )

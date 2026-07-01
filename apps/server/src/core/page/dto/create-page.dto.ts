@@ -23,6 +23,10 @@ export class CreatePageDto {
   @IsString()
   parentPageId?: string;
 
+  @IsOptional()
+  @IsIn(['page', 'collection'])
+  type?: 'page' | 'collection';
+
   @IsUUID()
   spaceId: string;
 

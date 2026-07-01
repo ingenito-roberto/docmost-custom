@@ -139,6 +139,7 @@ export class PageService {
       icon: createPageDto.icon,
       parentPageId: parentPageId,
       spaceId: createPageDto.spaceId,
+      type: createPageDto.type || 'page',
       creatorId: userId,
       workspaceId: workspaceId,
       lastUpdatedById: userId,
@@ -228,6 +229,7 @@ export class PageService {
       {
         title: updatePageDto.title,
         icon: updatePageDto.icon,
+        type: updatePageDto.type,
         lastUpdatedById: user.id,
         updatedAt: new Date(),
         contributorIds: contributorIds,
@@ -305,6 +307,7 @@ export class PageService {
         'spaceId',
         'creatorId',
         'isBase',
+        'type',
         'deletedAt',
       ])
       .select((eb) => this.pageRepo.withHasChildren(eb))

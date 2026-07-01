@@ -13,6 +13,7 @@ export interface IPage {
   workspaceId: string;
   isLocked: boolean;
   isBase: boolean;
+  type?: 'page' | 'collection';
   lastUpdatedById: string;
   createdAt: Date;
   updatedAt: Date;
@@ -84,6 +85,7 @@ export interface IPageInput {
   title: string;
   parentPageId: string;
   icon: string;
+  type?: 'page' | 'collection';
   coverPhoto: string;
   position: string;
   isLocked: boolean;

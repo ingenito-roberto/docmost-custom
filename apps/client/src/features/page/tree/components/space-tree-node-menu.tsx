@@ -9,6 +9,7 @@ import {
   IconCopy,
   IconDotsVertical,
   IconFileExport,
+  IconFolderPlus,
   IconLink,
   IconLock,
   IconLockOpen,
@@ -50,7 +51,7 @@ export function NodeMenu({ node, canEdit }: NodeMenuProps) {
   const clipboard = useClipboard({ timeout: 500 });
   const { spaceSlug } = useParams();
   const { openDeleteModal } = useDeletePageModal();
-  const { handleDelete } = useTreeMutation(node.spaceId);
+  const { handleDelete, handleCreate } = useTreeMutation(node.spaceId);
   const [data, setData] = useAtom(treeDataAtom);
   const emit = useQueryEmit();
   const [exportOpened, { open: openExportModal, close: closeExportModal }] =
@@ -188,6 +189,17 @@ export function NodeMenu({ node, canEdit }: NodeMenuProps) {
 
           {canEdit && (
             <>
+              <Menu.Item
+                leftSection={<IconFolderPlus size={16} />}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  await handleCreate(node.id, 'collection');
+                }}
+              >
+                {t("Create collection")}
+              </Menu.Item>
+
               <Menu.Item
                 leftSection={<IconCopy size={16} />}
                 onClick={(e) => {

@@ -25,6 +25,7 @@ export function buildTree(pages: IPage[]): SpaceTreeNode[] {
       spaceId: page.spaceId,
       parentPageId: page.parentPageId,
       isBase: page.isBase,
+      type: page.type,
       canEdit: page.canEdit ?? page.permissions?.canEdit,
       children: [],
     };
