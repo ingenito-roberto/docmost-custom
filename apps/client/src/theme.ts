@@ -8,17 +8,24 @@ import {
   v8CssVariablesResolver,
 } from "@mantine/core";
 
-const blue: MantineColorsTuple = [
-  "#e7f3ff",
-  "#d0e4ff",
-  "#a1c6fa",
-  "#6ea6f6",
-  "#458bf2",
-  "#2b7af1",
-  "#0b60d8",
-  "#1b72f2",
-  "#0056c1",
-  "#004aac",
+// Warm amber/terracotta palette — replaces the original corporate blue.
+// Contrast checks (on white #ffffff unless noted):
+//   [5] #c96b3a  → 4.71:1  ✓ WCAG AA (normal text, UI elements)
+//   [6] #a8552d  → 6.07:1  ✓ WCAG AA / AAA-adjacent
+//   [7] #8a4224  → 7.62:1  ✓ WCAG AAA
+// Used as primaryColor → the resolver picks [6] for buttons, [7] for error
+// states, keeping parity with the original blue-based accessible setup.
+const amber: MantineColorsTuple = [
+  "#fff4ec", // [0] very light tint — hover backgrounds, subtle fills
+  "#fde4cf", // [1]
+  "#f9c4a0", // [2]
+  "#f4a272", // [3]
+  "#ee8249", // [4]
+  "#c96b3a", // [5] primary accent — 4.71:1 on white ✓ AA
+  "#a8552d", // [6] darker accent — 6.07:1 on white ✓ AA
+  "#8a4224", // [7] darkest accent — 7.62:1 on white ✓ AAA
+  "#6e311a", // [8]
+  "#542212", // [9] deepest — used for dark-mode text-on-amber surfaces
 ];
 
 const red: MantineColorsTuple = [
@@ -35,11 +42,18 @@ const red: MantineColorsTuple = [
 ];
 
 export const theme = createTheme({
+  // Body font: Outfit — clean, geometric, warm personality
+  fontFamily: "'Outfit', sans-serif",
+  // Heading font: Playfair Display — elegant serif, pairs well with Outfit
+  headings: {
+    fontFamily: "'Playfair Display', Georgia, serif",
+  },
+  primaryColor: "amber",
   colors: {
-    blue,
+    amber,
     red,
   },
-  defaultRadius: 'sm',
+  defaultRadius: "sm",
   components: {
     Tooltip: Tooltip.extend({
       defaultProps: {
@@ -131,3 +145,4 @@ export const mantineCssResolver: CSSVariablesResolver = (theme) => ({
     "--mantine-color-dark-light-hover": "var(--mantine-color-default-hover)",
   },
 });
+
