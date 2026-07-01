@@ -2,12 +2,13 @@ import { useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAtom } from "jotai";
 import { useTranslation } from "react-i18next";
-import { ActionIcon, rem } from "@mantine/core";
+import { ActionIcon, Menu, rem } from "@mantine/core";
 import {
   IconChevronDown,
   IconChevronRight,
   IconFileDescription,
   IconFolder,
+  IconFolderPlus,
   IconPlus,
   IconPointFilled,
   IconTable,
@@ -269,33 +270,56 @@ function CreateNode({
   const { t } = useTranslation();
   const { handleCreate } = useTreeMutation(node.spaceId);
 
-  async function handleClickCreate() {
+  async function handleClickCreate(type?: 'collection') {
     if (node.hasChildren && !hasChildren) {
-      // Expand and lazy-load before creating a child. handleCreate reads the
-      // latest tree imperatively (via useStore) so we no longer need a
-      // setTimeout to wait for React to rerun the closure with fresh data.
       if (!isOpen) onToggle();
       await onExpandTree();
     } else if (!isOpen) {
       onToggle();
     }
-    handleCreate(node.id);
+    handleCreate(node.id, type);
   }
 
   return (
-    <ActionIcon
-      variant="subtle"
-      color="gray"
-      className={classes.actionIcon}
-      aria-label={t("Create subpage of {{name}}", { name: node.name || t("untitled") })}
-      tabIndex={-1}
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleClickCreate();
-      }}
-    >
-      <IconPlus style={{ width: rem(20), height: rem(20) }} stroke={2} />
-    </ActionIcon>
+    <Menu shadow="md" width={200}>
+      <Menu.Target>
+        <ActionIcon
+          variant="subtle"
+          color="gray"
+          className={classes.actionIcon}
+          aria-label={t("Create subpage of {{name}}", { name: node.name || t("untitled") })}
+          tabIndex={-1}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          <IconPlus style={{ width: rem(20), height: rem(20) }} stroke={2} />
+        </ActionIcon>
+      </Menu.Target>
+
+      <Menu.Dropdown>
+        <Menu.Item
+          leftSection={<IconFileDescription size={16} />}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleClickCreate();
+          }}
+        >
+          {t("Create page")}
+        </Menu.Item>
+        <Menu.Item
+          leftSection={<IconFolderPlus size={16} />}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleClickCreate('collection');
+          }}
+        >
+          {t("Create collection")}
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
   );
 }

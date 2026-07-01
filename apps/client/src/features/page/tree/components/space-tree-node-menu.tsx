@@ -189,16 +189,6 @@ export function NodeMenu({ node, canEdit }: NodeMenuProps) {
 
           {canEdit && (
             <>
-              <Menu.Item
-                leftSection={<IconFolderPlus size={16} />}
-                onClick={async (e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  await handleCreate(node.id, 'collection');
-                }}
-              >
-                {t("Create collection")}
-              </Menu.Item>
 
               <Menu.Item
                 leftSection={<IconCopy size={16} />}

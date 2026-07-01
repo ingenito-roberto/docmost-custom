@@ -89,6 +89,8 @@ export class PageController {
 
     const permissions = { canEdit, hasRestriction };
 
+    const lockStatus = await this.pageRepo.isPageEffectivelyLocked(page.id);
+
     if (dto.format && dto.format !== 'json' && page.content) {
       const contentOutput =
         dto.format === 'markdown'
@@ -98,10 +100,11 @@ export class PageController {
         ...page,
         content: contentOutput,
         permissions,
+        ...lockStatus,
       };
     }
 
-    return { ...page, permissions };
+    return { ...page, permissions, ...lockStatus };
   }
 
   @HttpCode(HttpStatus.OK)

@@ -48,8 +48,9 @@ export const theme = createTheme({
   headings: {
     fontFamily: "'Playfair Display', Georgia, serif",
   },
-  primaryColor: "amber",
+  primaryColor: "blue",
   colors: {
+    blue: amber,
     amber,
     red,
   },

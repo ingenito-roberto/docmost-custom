@@ -20,6 +20,7 @@ import {
   IconStarFilled,
   IconTemplate,
   IconTrash,
+  IconFolderPlus,
 } from "@tabler/icons-react";
 import {
   useSpaceWatchStatusQuery,
@@ -159,24 +160,44 @@ export function SpaceSidebar() {
               SpaceCaslAction.Manage,
               SpaceCaslSubject.Page,
             ) && (
-              <UnstyledButton
-                className={classes.menu}
-                onClick={() => {
-                  handleCreatePage();
-                  if (mobileSidebarOpened) {
-                    toggleMobileSidebar();
-                  }
-                }}
-              >
-                <div className={classes.menuItemInner}>
-                  <IconPlus
-                    size={18}
-                    className={classes.menuItemIcon}
-                    stroke={2}
-                  />
-                  <span>{t("New page")}</span>
-                </div>
-              </UnstyledButton>
+              <>
+                <UnstyledButton
+                  className={classes.menu}
+                  onClick={() => {
+                    handleCreatePage();
+                    if (mobileSidebarOpened) {
+                      toggleMobileSidebar();
+                    }
+                  }}
+                >
+                  <div className={classes.menuItemInner}>
+                    <IconPlus
+                      size={18}
+                      className={classes.menuItemIcon}
+                      stroke={2}
+                    />
+                    <span>{t("New page")}</span>
+                  </div>
+                </UnstyledButton>
+                <UnstyledButton
+                  className={classes.menu}
+                  onClick={() => {
+                    handleCreate(null, 'collection');
+                    if (mobileSidebarOpened) {
+                      toggleMobileSidebar();
+                    }
+                  }}
+                >
+                  <div className={classes.menuItemInner}>
+                    <IconFolderPlus
+                      size={18}
+                      className={classes.menuItemIcon}
+                      stroke={2}
+                    />
+                    <span>{t("New collection")}</span>
+                  </div>
+                </UnstyledButton>
+              </>
             )}
           </div>
         </div>

@@ -12,6 +12,8 @@ export interface IPage {
   spaceId: string;
   workspaceId: string;
   isLocked: boolean;
+  effectivelyLocked?: boolean;
+  lockedByAncestorId?: string;
   isBase: boolean;
   type?: 'page' | 'collection';
   lastUpdatedById: string;

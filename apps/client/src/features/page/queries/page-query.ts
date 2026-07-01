@@ -122,11 +122,8 @@ export function useTogglePageLockMutation() {
   return useMutation<IPage, Error, { pageId: string; isLocked: boolean }>({
     mutationFn: ({ pageId, isLocked }) => togglePageLock(pageId, isLocked),
     onSuccess: (updatedPage) => {
-      // Patch both cache keys so the UI reflects the new lock state immediately
-      const patchCache = (cached: IPage | undefined) =>
-        cached ? { ...cached, isLocked: updatedPage.isLocked } : cached;
-      queryClient.setQueryData<IPage>(["pages", updatedPage.id], patchCache);
-      queryClient.setQueryData<IPage>(["pages", updatedPage.slugId], patchCache);
+      // Invalidate all page queries so the lock state cascades to all children immediately
+      queryClient.invalidateQueries({ queryKey: ["pages"] });
 
       notifications.show({
         message: updatedPage.isLocked

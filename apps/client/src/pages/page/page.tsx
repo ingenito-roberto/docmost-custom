@@ -71,8 +71,8 @@ function PageContent({ pageSlug }: { pageSlug: string | undefined }) {
   // Inherited lock (from a collection ancestor, Task 2) is enforced server-side;
   // the banner will be extended with ancestor info once Task 2 lands.
   const isDirectlyLocked = page?.isLocked === true;
-  const effectivelyLocked = isDirectlyLocked;
-  // canEdit already accounts for space permissions; we layer the lock on top.
+  const effectivelyLocked = page?.effectivelyLocked === true || isDirectlyLocked;
+  const lockedByAncestorId = page?.lockedByAncestorId;
   const editableWithLock = canEdit && !effectivelyLocked;
 
   if (isLoading) {
@@ -173,14 +173,10 @@ function PageContent({ pageSlug }: { pageSlug: string | undefined }) {
 
         <MemoizedPageHeader readOnly={!canEdit} />
 
-        {effectivelyLocked && (
-          <div style={{ maxWidth: 860, margin: "0 auto", padding: "0 24px" }}>
-            <LockedPageBanner directLock={isDirectlyLocked} />
-          </div>
-        )}
+
 
         {page.type === 'collection' ? (
-          <CollectionView page={page} />
+          <CollectionView page={page} canEdit={editableWithLock} />
         ) : (
           <MemoizedFullEditor
             key={page.id}

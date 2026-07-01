@@ -76,6 +76,7 @@ export default function PageHeaderMenu({ readOnly }: PageHeaderMenuProps) {
     pageId: extractPageSlugId(pageSlug),
   });
   const isDeleted = !!page?.deletedAt;
+  const toggleLock = useTogglePageLockMutation();
 
   useHotkeys(
     [
@@ -105,6 +106,38 @@ export default function PageHeaderMenu({ readOnly }: PageHeaderMenuProps) {
   return (
     <>
       <ConnectionWarning />
+
+      {page?.effectivelyLocked && (
+        <Tooltip label={page.isLocked ? t("Unlock page") : t("Locked by parent collection")} openDelay={250} withArrow>
+          <ActionIcon
+            variant="light"
+            color="red"
+            aria-label={t("Page locked")}
+            onClick={() => {
+              if (page.isLocked) {
+                toggleLock.mutate({ pageId: page.id, isLocked: false });
+              }
+            }}
+          >
+            <IconLock size={20} stroke={2} />
+          </ActionIcon>
+        </Tooltip>
+      )}
+
+      {!readOnly && !page?.effectivelyLocked && (
+        <Tooltip label={t("Lock page")} openDelay={250} withArrow>
+          <ActionIcon
+            variant="subtle"
+            color="dark"
+            aria-label={t("Lock page")}
+            onClick={() => {
+              toggleLock.mutate({ pageId: page.id, isLocked: true });
+            }}
+          >
+            <IconLockOpen size={20} stroke={2} />
+          </ActionIcon>
+        </Tooltip>
+      )}
 
       {!readOnly && !page?.isBase && <PageEditModeToggle size="xs" />}
 
@@ -331,32 +364,6 @@ function PageActionMenu({ readOnly }: PageActionMenuProps) {
           >
             {t("Print PDF")}
           </Menu.Item>
-
-          {!readOnly && (
-            <>
-              <Menu.Divider />
-              <Menu.Item
-                leftSection={page?.type === 'collection' ? <IconFileDescription size={16} /> : <IconFolderPlus size={16} />}
-                onClick={() => {
-                  updatePageMutation.mutate({
-                    pageId: page.id,
-                    type: page?.type === 'collection' ? 'page' : 'collection'
-                  });
-                }}
-              >
-                {page?.type === 'collection' ? t("Turn into page") : t("Turn into collection")}
-              </Menu.Item>
-
-              <Menu.Item
-                leftSection={page?.isLocked ? <IconLockOpen size={16} /> : <IconLock size={16} />}
-                onClick={() =>
-                  toggleLock.mutate({ pageId: page.id, isLocked: !page?.isLocked })
-                }
-              >
-                {page?.isLocked ? t("Unlock page") : t("Lock page")}
-              </Menu.Item>
-            </>
-          )}
 
           {!readOnly && (
             <>
