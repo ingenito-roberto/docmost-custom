@@ -17,6 +17,9 @@
 - **Typography & Styling**: Changed global font to *Lora* and increased body text size for a cleaner reading experience.
 - **Enhanced Editor**: Allowed block nesting inside lists and customized `Shift-Enter` behavior.
 - **UI Tweaks**: Added sidebar popups, refined page padding, and removed unused conversion options for a simpler interface.
+- **Smart Block Conversion**: Added a universal `Turn Into` drag-handle menu to seamlessly convert between blocks (e.g., Quotes to Callouts) while preserving content.
+- **Smart Backspace for Lists**: Intelligently merges text paragraphs or lifts complex blocks (like Callouts) out of lists when pressing backspace, without deleting the parent bullet.
+- **Todo Enhancements**: Replaced strikethrough on checked to-dos with an elegant opacity reduction effect.
 
 ---
 
