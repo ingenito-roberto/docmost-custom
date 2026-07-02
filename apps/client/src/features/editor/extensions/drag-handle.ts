@@ -160,6 +160,9 @@ export function DragHandlePlugin(
   options: GlobalDragHandleOptions & { pluginKey: string },
 ) {
   let listType = "";
+  // Track the most recent node position where the drag handle is hovering,
+  // so we can select the correct node when the handle is clicked.
+  let currentHoveredNodePos: number | null = null;
   function handleDragStart(event: DragEvent, view: EditorView) {
     view.focus();
 
@@ -338,6 +341,42 @@ export function DragHandlePlugin(
       dragHandleElement.dataset.dragHandle = "";
       dragHandleElement.classList.add("drag-handle");
 
+      function onDragHandleClick(e: MouseEvent) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Select the node under the drag handle before showing the menu
+        if (currentHoveredNodePos != null) {
+          try {
+            const { doc } = view.state;
+            const resolvedPos = doc.resolve(currentHoveredNodePos);
+            const nodePos = resolvedPos.depth > 0 ? resolvedPos.before(resolvedPos.depth) : currentHoveredNodePos;
+            const sel = NodeSelection.create(doc, nodePos);
+            view.dispatch(view.state.tr.setSelection(sel));
+          } catch {
+            // If node selection fails, focus without selection change
+          }
+        }
+        // Dispatch a custom event so the React layer can show the menu.
+        // We include the bounding rect so the menu can anchor near the handle.
+        const rect = dragHandleElement!.getBoundingClientRect();
+        const customEvent = new CustomEvent("dragHandleClick", {
+          bubbles: true,
+          detail: {
+            rect: {
+              top: rect.top,
+              bottom: rect.bottom,
+              left: rect.left,
+              right: rect.right,
+              width: rect.width,
+              height: rect.height,
+            } as DOMRect,
+          },
+        });
+        dragHandleElement!.dispatchEvent(customEvent);
+      }
+
+      dragHandleElement.addEventListener("click", onDragHandleClick);
+
       function onDragHandleDragStart(e: DragEvent) {
         handleDragStart(e, view);
       }
@@ -371,6 +410,7 @@ export function DragHandlePlugin(
           if (!handleBySelector) {
             dragHandleElement?.remove?.();
           }
+          dragHandleElement?.removeEventListener("click", onDragHandleClick);
           dragHandleElement?.removeEventListener("drag", onDragHandleDrag);
           dragHandleElement?.removeEventListener(
             "dragstart",
@@ -429,6 +469,11 @@ export function DragHandlePlugin(
               rendererOuter;
             const innerRect = absoluteRect(inner);
             if (!dragHandleElement) return;
+            // Track the hovered node position for click selection
+            const customNodePos = nodePosAtDOM(node, view, options);
+            if (customNodePos != null) {
+              currentHoveredNodePos = customNodePos;
+            }
             dragHandleElement.style.left = `${innerRect.left + 4}px`;
             dragHandleElement.style.top = `${innerRect.top + 4}px`;
             showDragHandle();
@@ -460,6 +505,12 @@ export function DragHandlePlugin(
           rect.width = options.dragHandleWidth;
 
           if (!dragHandleElement) return;
+
+          // Track the node position for the click handler
+          const hoveredNodePos = nodePosAtDOM(node, view, options);
+          if (hoveredNodePos != null) {
+            currentHoveredNodePos = hoveredNodePos;
+          }
 
           dragHandleElement.style.left = `${rect.left - rect.width}px`;
           dragHandleElement.style.top = `${rect.top}px`;

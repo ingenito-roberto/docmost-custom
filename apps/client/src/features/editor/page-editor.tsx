@@ -76,6 +76,7 @@ import { EditorLinkMenu } from "@/features/editor/components/link/link-menu";
 import ColumnsMenu from "@/features/editor/components/columns/columns-menu.tsx";
 import { TransclusionLookupProvider } from "@/features/editor/components/transclusion/transclusion-lookup-context";
 import { useTranslation } from "react-i18next";
+import DragHandleMenu from "@/features/editor/components/drag-handle-menu/drag-handle-menu.tsx";
 
 interface PageEditorProps {
   pageId: string;
@@ -118,6 +119,8 @@ export default function PageEditor({
   const { pageSlug } = useParams();
   const slugId = extractPageSlugId(pageSlug);
   const currentPageEditMode = useAtomValue(currentPageEditModeAtom);
+  // Drag handle menu state
+  const [dragHandleMenuAnchor, setDragHandleMenuAnchor] = useState<DOMRect | null>(null);
   const canScroll = useCallback(
     () => Boolean(isComponentMounted.current && editorRef.current),
     [isComponentMounted],
@@ -344,6 +347,20 @@ export default function PageEditor({
     }
   }, 3000);
 
+  useEffect(() => {
+    const handleDragHandleClick = (e: Event) => {
+      if (!editorIsEditable) return;
+      const customEvent = e as CustomEvent;
+      const rect = customEvent.detail?.rect as DOMRect | undefined;
+      setDragHandleMenuAnchor(rect ?? null);
+    };
+
+    document.addEventListener("dragHandleClick", handleDragHandleClick);
+    return () => {
+      document.removeEventListener("dragHandleClick", handleDragHandleClick);
+    };
+  }, [editorIsEditable]);
+
   const handleActiveCommentEvent = (event) => {
     const { commentId, resolved } = event.detail;
 
@@ -455,6 +472,13 @@ export default function PageEditor({
                 <DrawioMenu editor={editor} />
                 <ColumnsMenu editor={editor} />
               </div>
+            )}
+            {editor && editorIsEditable && dragHandleMenuAnchor && (
+              <DragHandleMenu
+                editor={editor}
+                anchorRect={dragHandleMenuAnchor}
+                onClose={() => setDragHandleMenuAnchor(null)}
+              />
             )}
             {editor &&
               !editorIsEditable &&
