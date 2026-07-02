@@ -10,6 +10,16 @@
 </div>
 <br />
 
+## Fork Key Changes
+
+- **Collection Pages**: Introduced a new "Collection" page type for better organization in the sidebar.
+- **Page Locking System**: Improved lock UI (including a custom lock banner) and added hierarchical lock cascading from parent "collections".
+- **Typography & Styling**: Changed global font to *Lora* and increased body text size for a cleaner reading experience.
+- **Enhanced Editor**: Allowed block nesting inside lists and customized `Shift-Enter` behavior.
+- **UI Tweaks**: Added sidebar popups, refined page padding, and removed unused conversion options for a simpler interface.
+
+---
+
 ## Getting started
 
 To get started with Docmost, please refer to our [documentation](https://docmost.com/docs) or try our [cloud version](https://docmost.com/pricing) .
