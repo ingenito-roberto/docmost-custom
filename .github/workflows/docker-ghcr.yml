@@ -3,7 +3,7 @@ name: Build and Push Docker Image to GHCR
 on:
   push:
     branches:
-      - 'feat/theme-page_lock-collections'
+      - 'fork-main'
   workflow_dispatch:
 
 permissions:
