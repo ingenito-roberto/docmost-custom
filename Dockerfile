@@ -5,6 +5,10 @@ RUN npm install -g pnpm@10.4.0
 
 FROM base AS builder
 
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends python3 make g++ \
+  && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY . .
@@ -15,7 +19,7 @@ RUN pnpm build
 FROM base AS installer
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends curl bash \
+  && apt-get install -y --no-install-recommends curl bash python3 make g++ \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
