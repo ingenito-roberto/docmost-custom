@@ -78,6 +78,7 @@ import { TransclusionLookupProvider } from "@/features/editor/components/transcl
 import { useTranslation } from "react-i18next";
 import DragHandleMenu from "@/features/editor/components/drag-handle-menu/drag-handle-menu.tsx";
 import { FootnoteTooltip } from "@/features/editor/components/footnote/footnote-tooltip";
+import { FootnoteMenu } from "@/features/editor/components/footnote/footnote-menu";
 
 interface PageEditorProps {
   pageId: string;
@@ -461,6 +462,7 @@ export default function PageEditor({
               <div>
                 <EditorAiMenu editor={editor} />
                 <EditorLinkMenu editor={editor} />
+                <FootnoteMenu editor={editor} />
                 <EditorBubbleMenu editor={editor} />
                 <TableMenu editor={editor} />
                 <TableHandlesLayer editor={editor} />
