@@ -14,6 +14,7 @@ import {
   sharedTreeDataAtom,
 } from "@/features/share/atoms/shared-page-atom.ts";
 import { isPageInTree } from "@/features/share/utils.ts";
+import { SharedCollectionView } from "@/features/share/components/shared-collection-view.tsx";
 
 export default function SharedPage() {
   const { t } = useTranslation();
@@ -64,13 +65,17 @@ export default function SharedPage() {
       </Helmet>
 
       <Container fluid={fullWidth} size={fullWidth ? undefined : 900} p={0}>
-        <ReadonlyPageEditor
-          key={data.page.id}
-          title={data.page.title}
-          content={data.page.content}
-          pageId={data.page.id}
-          shareId={data.share.id}
-        />
+        {data.page.type === 'collection' ? (
+          <SharedCollectionView page={data.page as any} />
+        ) : (
+          <ReadonlyPageEditor
+            key={data.page.id}
+            title={data.page.title}
+            content={data.page.content}
+            pageId={data.page.id}
+            shareId={data.share.id}
+          />
+        )}
       </Container>
 
       {data && !shareId && !(data.features?.length > 0) && <ShareBranding />}

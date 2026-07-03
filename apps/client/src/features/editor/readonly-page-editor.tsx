@@ -10,6 +10,7 @@ import { useAtom } from "jotai";
 import { readOnlyEditorAtom } from "@/features/editor/atoms/editor-atoms.ts";
 import { useEditorScroll } from "./hooks/use-editor-scroll";
 import { TransclusionLookupProvider } from "@/features/editor/components/transclusion/transclusion-lookup-context";
+import { FootnoteTooltip } from "@/features/editor/components/footnote/footnote-tooltip";
 
 interface PageEditorProps {
   title: string;
@@ -109,6 +110,7 @@ export default function ReadonlyPageEditor({
           }
         }}
       ></EditorProvider>
+      <FootnoteTooltip />
       <div style={{ paddingBottom: "20vh" }}></div>
     </TransclusionLookupProvider>
   );
