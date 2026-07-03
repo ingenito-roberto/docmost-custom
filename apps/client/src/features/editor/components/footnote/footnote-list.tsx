@@ -126,8 +126,15 @@ export function FootnoteList({ editor }: FootnoteListProps) {
           }}
         >
           <Group justify="space-between" wrap="nowrap" mb={4}>
-            <Group gap="xs" wrap="nowrap">
-              <Badge size="xs" variant="filled" color="blue" radius="sm">
+            <Group gap="xs" wrap="nowrap" style={{ cursor: "pointer" }} onClick={() => {
+              const el = document.querySelector(`[data-footnote-id="${entry.footnoteId}"]`);
+              if (el) {
+                el.scrollIntoView({ behavior: "smooth", block: "center" });
+                el.classList.add("footnote-highlight");
+                setTimeout(() => el.classList.remove("footnote-highlight"), 2000);
+              }
+            }}>
+              <Badge size="xs" variant="filled" color="blue" radius="sm" style={{ cursor: "pointer" }}>
                 {entry.index}
               </Badge>
               <Text

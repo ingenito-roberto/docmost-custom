@@ -40,9 +40,9 @@ export function FootnoteTooltip() {
   const { rect, note } = tooltip;
 
   // Position tooltip just above the hovered element
-  const top = rect.top + window.scrollY - 8;
+  const top = rect.top - 8;
   const left = Math.min(
-    rect.left + window.scrollX,
+    rect.left,
     window.innerWidth - 360,
   );
 

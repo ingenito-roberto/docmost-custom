@@ -71,3 +71,9 @@
     transform: translateY(0);
   }
 }
+
+.ProseMirror .footnote-mark.footnote-highlight {
+  background-color: light-dark(var(--mantine-color-yellow-2), var(--mantine-color-yellow-8));
+  border-bottom-color: light-dark(var(--mantine-color-yellow-6), var(--mantine-color-yellow-5));
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}

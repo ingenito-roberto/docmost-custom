@@ -524,9 +524,11 @@ export function updateCacheOnMovePage(
                   : item,
               );
               // Sort lexicographically by position (fractional index strings)
-              const sortedItems = [...updatedItems].sort(
-                (a, b) => (a.position ?? "").localeCompare(b.position ?? ""),
-              );
+              const sortedItems = [...updatedItems].sort((a, b) => {
+                const posA = a.position ?? "";
+                const posB = b.position ?? "";
+                return posA < posB ? -1 : posA > posB ? 1 : 0;
+              });
               return { ...page, items: sortedItems };
             }),
           };
@@ -609,9 +611,11 @@ export function updateCacheOnMovePage(
           ...old,
           pages: old.pages.map((page, index) => {
             if (index === old.pages.length - 1) {
-              const newItems = [...page.items, pageData].sort(
-                (a, b) => (a.position ?? "").localeCompare(b.position ?? ""),
-              );
+              const newItems = [...page.items, pageData].sort((a, b) => {
+                const posA = a.position ?? "";
+                const posB = b.position ?? "";
+                return posA < posB ? -1 : posA > posB ? 1 : 0;
+              });
               return { ...page, items: newItems };
             }
             return page;
