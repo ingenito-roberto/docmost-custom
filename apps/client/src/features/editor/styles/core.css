@@ -7,14 +7,8 @@
 }
 
 .ProseMirror {
-  background-color: light-dark(
-    var(--mantine-color-white),
-    var(--mantine-color-dark-7)
-  );
-  color: light-dark(
-    var(--mantine-color-default-color),
-    var(--mantine-color-white)
-  );
+  background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+  color: light-dark(var(--mantine-color-default-color), var(--mantine-color-white));
   font-size: var(--mantine-font-size-md);
   line-height: var(--mantine-line-height-xl);
   font-weight: 400;
@@ -49,9 +43,10 @@
   ul,
   ol {
     padding-left: 2rem;
-    padding-right: 1rem;
+    padding-right: 0rem;
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
+    margin-left: 0.5rem;
   }
 
   ul p,
@@ -98,10 +93,7 @@
   }
 
   code {
-    background-color: light-dark(
-      var(--mantine-color-gray-0),
-      var(--mantine-color-dark-8)
-    );
+    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
     color: #616161;
   }
 
@@ -120,8 +112,7 @@
 
   blockquote {
     padding-left: 1rem;
-    border-left: 3px solid
-      light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
+    border-left: 3px solid light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
     margin: 0;
   }
 
@@ -166,7 +157,6 @@
     &:last-child {
       margin-bottom: 0;
     }
-
   }
 
   .react-renderer.node-callout div[style*="white-space: inherit;"] > :first-child {
@@ -233,7 +223,6 @@
     margin-left: auto;
     margin-right: auto;
   }
-
 }
 
 .ProseMirror > h1,
@@ -242,11 +231,9 @@
 .ProseMirror > h4,
 .ProseMirror > h5,
 .ProseMirror > h6 {
-
   > .link-btn {
     cursor: pointer;
     position: relative;
-
   }
 
   > .link-btn > .link-btn-content {
