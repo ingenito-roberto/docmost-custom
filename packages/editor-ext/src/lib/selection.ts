@@ -13,7 +13,7 @@ export const Selection = Extension.create({
         key: new PluginKey("selection"),
         props: {
           decorations(state) {
-            if (state.selection.empty) {
+            if (state.selection.empty || !editor.isEditable) {
               return null;
             }
 
