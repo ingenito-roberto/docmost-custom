@@ -1,0 +1,73 @@
+/* ──────────────────────────────────────────────────────────────
+   Footnote marks — auto-numbered superscripts with hover tooltip
+   ────────────────────────────────────────────────────────────── */
+
+/* Reset the footnote counter at the editor root */
+.ProseMirror {
+  counter-reset: footnote-counter;
+}
+
+/* Each footnote-marked span increments the counter */
+.ProseMirror .footnote-mark {
+  counter-increment: footnote-counter;
+  cursor: default;
+  border-bottom: 1.5px dashed
+    light-dark(var(--mantine-color-blue-5), var(--mantine-color-blue-4));
+  background-color: light-dark(
+    rgba(74, 144, 226, 0.07),
+    rgba(74, 144, 226, 0.12)
+  );
+  border-radius: 2px;
+  transition: background-color 0.15s ease;
+}
+
+.ProseMirror .footnote-mark:hover {
+  background-color: light-dark(
+    rgba(74, 144, 226, 0.18),
+    rgba(74, 144, 226, 0.25)
+  );
+}
+
+/* The <sup> element rendered inside the mark shows the counter value */
+.ProseMirror .footnote-mark .footnote-sup::before {
+  content: counter(footnote-counter);
+  font-size: 0.65em;
+  line-height: 0;
+  position: relative;
+  vertical-align: super;
+  color: light-dark(var(--mantine-color-blue-6), var(--mantine-color-blue-4));
+  font-weight: 600;
+  margin-left: 0.5px;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Footnote tooltip (rendered by React portal)
+   ────────────────────────────────────────────────────────────── */
+
+.footnote-tooltip {
+  position: fixed;
+  z-index: 9999;
+  max-width: 340px;
+  min-width: 180px;
+  background: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+  border: 1px solid
+    light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4));
+  border-radius: var(--mantine-radius-sm);
+  box-shadow: var(--mantine-shadow-md);
+  padding: 10px 14px;
+  font-size: var(--mantine-font-size-sm);
+  line-height: 1.5;
+  pointer-events: none;
+  animation: footnoteTooltipIn 0.12s ease;
+}
+
+@keyframes footnoteTooltipIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

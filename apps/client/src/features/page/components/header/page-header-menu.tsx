@@ -15,6 +15,7 @@ import {
   IconLockOpen,
   IconMarkdown,
   IconMessage,
+  IconNotes,
   IconPrinter,
   IconStar,
   IconStarFilled,
@@ -71,6 +72,7 @@ export default function PageHeaderMenu({ readOnly }: PageHeaderMenuProps) {
   const { t } = useTranslation();
   const commentsTriggerProps = useAsideTriggerProps("comments");
   const tocTriggerProps = useAsideTriggerProps("toc");
+  const footnotesTriggerProps = useAsideTriggerProps("footnotes");
   const { pageSlug } = useParams();
   const { data: page } = usePageQuery({
     pageId: extractPageSlugId(pageSlug),
@@ -163,6 +165,19 @@ export default function PageHeaderMenu({ readOnly }: PageHeaderMenuProps) {
             {...tocTriggerProps}
           >
             <IconList size={20} stroke={2} />
+          </ActionIcon>
+        </Tooltip>
+      )}
+
+      {!page?.isBase && (
+        <Tooltip label={t("Footnotes")} openDelay={250} withArrow>
+          <ActionIcon
+            variant="subtle"
+            color="dark"
+            aria-label={t("Footnotes")}
+            {...footnotesTriggerProps}
+          >
+            <IconNotes size={20} stroke={2} />
           </ActionIcon>
         </Tooltip>
       )}

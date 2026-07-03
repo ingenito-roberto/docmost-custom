@@ -77,6 +77,7 @@ import ColumnsMenu from "@/features/editor/components/columns/columns-menu.tsx";
 import { TransclusionLookupProvider } from "@/features/editor/components/transclusion/transclusion-lookup-context";
 import { useTranslation } from "react-i18next";
 import DragHandleMenu from "@/features/editor/components/drag-handle-menu/drag-handle-menu.tsx";
+import { FootnoteTooltip } from "@/features/editor/components/footnote/footnote-tooltip";
 
 interface PageEditorProps {
   pageId: string;
@@ -490,6 +491,7 @@ export default function PageEditor({
             {showReadOnlyCommentPopup && (
               <CommentDialog editor={editor} pageId={pageId} readOnly />
             )}
+            {editor && <FootnoteTooltip />}
           </div>
           <div
             onClick={() => {

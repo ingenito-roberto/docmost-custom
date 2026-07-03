@@ -10,10 +10,11 @@ import {
   IconUnderline,
   IconMessage,
   IconSparkles,
+  IconSuperscript,
 } from "@tabler/icons-react";
 import clsx from "clsx";
 import classes from "./bubble-menu.module.css";
-import { ActionIcon, Button, rem, Tooltip } from "@mantine/core";
+import { ActionIcon, Button, Popover, rem, Tooltip } from "@mantine/core";
 import { ColorSelector } from "./color-selector";
 import { NodeSelector } from "./node-selector";
 import { TextAlignmentSelector } from "./text-alignment-selector";
@@ -28,6 +29,7 @@ import { LinkSelector } from "@/features/editor/components/bubble-menu/link-sele
 import { useTranslation } from "react-i18next";
 import { showAiMenuAtom, showLinkMenuAtom } from "@/features/editor/atoms/editor-atoms";
 import { userAtom, workspaceAtom } from "@/features/user/atoms/current-user-atom";
+import { FootnoteInput } from "@/features/editor/components/footnote/footnote-input";
 
 export interface BubbleMenuItem {
   name: string;
@@ -56,6 +58,7 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
   const showAiMenuRef = useRef(showAiMenu);
   const [showLinkMenu] = useAtom(showLinkMenuAtom);
   const showLinkMenuRef = useRef(showLinkMenu);
+  const [footnotePopoverOpen, setFootnotePopoverOpen] = useState(false);
 
   useEffect(() => {
     showCommentPopupRef.current = showCommentPopup;
@@ -83,6 +86,7 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
         isStrike: ctx.editor.isActive("strike"),
         isCode: ctx.editor.isActive("code"),
         isComment: ctx.editor.isActive("comment"),
+        isFootnote: ctx.editor.isActive("footnote"),
       };
     },
   });
@@ -160,6 +164,7 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
         setIsNodeSelectorOpen(false);
         setIsTextAlignmentOpen(false);
         setIsColorSelectorOpen(false);
+        setFootnotePopoverOpen(false);
       },
     },
   };
@@ -247,6 +252,54 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
         )}
 
         <LinkSelector />
+
+        {/* Footnote button */}
+        <Popover
+          opened={footnotePopoverOpen}
+          onClose={() => setFootnotePopoverOpen(false)}
+          position="bottom"
+          withArrow
+          shadow="md"
+          withinPortal={false}
+        >
+          <Popover.Target>
+            <Tooltip
+              label={t("Footnote")}
+              withArrow
+              withinPortal={false}
+              disabled={footnotePopoverOpen}
+            >
+              <ActionIcon
+                variant="default"
+                size="lg"
+                radius="6px"
+                aria-label={t("Footnote")}
+                style={{ border: "none" }}
+                className={clsx({ [classes.active]: editorState?.isFootnote })}
+                onClick={() => {
+                  if (!isEditorReady(props.editor)) return;
+                  // If already a footnote mark, remove it
+                  if (editorState?.isFootnote) {
+                    const footnoteId = props.editor.getAttributes("footnote").footnoteId;
+                    if (footnoteId) {
+                      props.editor.chain().focus().unsetFootnote(footnoteId).run();
+                    }
+                  } else {
+                    setFootnotePopoverOpen(true);
+                  }
+                }}
+              >
+                <IconSuperscript size={16} stroke={2} />
+              </ActionIcon>
+            </Tooltip>
+          </Popover.Target>
+          <Popover.Dropdown p={0}>
+            <FootnoteInput
+              editor={props.editor}
+              onClose={() => setFootnotePopoverOpen(false)}
+            />
+          </Popover.Dropdown>
+        </Popover>
 
         {!templateMode && (
           <Tooltip label={t(commentItem.name)} withArrow withinPortal={false}>

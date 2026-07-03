@@ -11,6 +11,7 @@ import { pageEditorAtom } from "@/features/editor/atoms/editor-atoms.ts";
 import AsideChatPanel from "@/ee/ai-chat/components/aside-chat-panel";
 import { PageDetailsAside } from "@/features/page-details/components/page-details-aside.tsx";
 import { ASIDE_PANEL_ID } from "@/hooks/use-toggle-aside.tsx";
+import { FootnoteList } from "@/features/editor/components/footnote/footnote-list";
 
 export default function Aside() {
   const [{ tab, isAsideOpen }, setAsideState] = useAtom(asideStateAtom);
@@ -34,6 +35,10 @@ export default function Aside() {
     case "toc":
       component = <TableOfContents editor={pageEditor} />;
       title = "Table of contents";
+      break;
+    case "footnotes":
+      component = <FootnoteList editor={pageEditor} />;
+      title = "Footnotes";
       break;
     case "chat":
       component = <AsideChatPanel />;

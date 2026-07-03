@@ -505,7 +505,38 @@ export function updateCacheOnMovePage(
   newParentId: string | null,
   pageData: Partial<IPage>,
 ) {
-  // Remove page from old parent's cache
+  const isSameParent = oldParentId === newParentId;
+
+  if (isSameParent) {
+    // Intra-parent reorder: update the moved page's position in-place, then
+    // re-sort all items so the list order matches the new positions.
+    getChildrenCacheKeys(newParentId, spaceId).forEach((queryKey) => {
+      queryClient.setQueryData<InfiniteData<IPagination<Partial<IPage>>>>(
+        queryKey,
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page) => {
+              const updatedItems = page.items.map((item) =>
+                item.id === pageId
+                  ? { ...item, position: pageData.position ?? item.position }
+                  : item,
+              );
+              // Sort lexicographically by position (fractional index strings)
+              const sortedItems = [...updatedItems].sort(
+                (a, b) => (a.position ?? "").localeCompare(b.position ?? ""),
+              );
+              return { ...page, items: sortedItems };
+            }),
+          };
+        },
+      );
+    });
+    return;
+  }
+
+  // Cross-parent move: remove from old parent's cache
   getChildrenCacheKeys(oldParentId, spaceId).forEach((oldQueryKey) => {
     queryClient.setQueryData<InfiniteData<IPagination<IPage>>>(
       oldQueryKey,
@@ -561,7 +592,7 @@ export function updateCacheOnMovePage(
     }
   }
 
-  // Add page to new parent's cache
+  // Add page to new parent's cache and sort by position
   getChildrenCacheKeys(newParentId, spaceId).forEach((newQueryKey) => {
     queryClient.setQueryData<InfiniteData<IPagination<Partial<IPage>>>>(
       newQueryKey,
@@ -578,10 +609,10 @@ export function updateCacheOnMovePage(
           ...old,
           pages: old.pages.map((page, index) => {
             if (index === old.pages.length - 1) {
-              return {
-                ...page,
-                items: [...page.items, pageData],
-              };
+              const newItems = [...page.items, pageData].sort(
+                (a, b) => (a.position ?? "").localeCompare(b.position ?? ""),
+              );
+              return { ...page, items: newItems };
             }
             return page;
           }),

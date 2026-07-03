@@ -62,6 +62,7 @@ import {
   TransclusionReference,
   TableView,
   BaseEmbed as BaseEmbedNode,
+  Footnote,
 } from "@docmost/editor-ext";
 import {
   randomElement,
@@ -453,6 +454,7 @@ export const mainExtensions = [
   AutoJoiner.configure({
     elementsToJoin: [],
   }),
+  Footnote,
 ] as any;
 
 type CollabExtensions = (provider: HocuspocusProvider, user: IUser) => any[];
