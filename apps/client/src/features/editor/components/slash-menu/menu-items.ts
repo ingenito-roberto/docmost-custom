@@ -366,6 +366,7 @@ const CommandGroups: SlashMenuGroupedItemsType = {
       description: "Insert an inline base on this page",
       searchTerms: ["base", "database", "table", "grid", "spreadsheet"],
       icon: IconTable,
+      requiresBases: true,
       command: ({ editor, range }: CommandProps) => {
         insertBaseEmbedBlock(editor, { range });
       },
@@ -375,6 +376,7 @@ const CommandGroups: SlashMenuGroupedItemsType = {
       description: "Insert a kanban board on this page",
       searchTerms: ["kanban", "board", "cards", "status", "task", "database"],
       icon: IconLayoutKanban,
+      requiresBases: true,
       command: ({ editor, range }: CommandProps) => {
         insertBaseEmbedBlock(editor, { range, template: "kanban" });
       },
