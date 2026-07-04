@@ -12,14 +12,18 @@
 
 ## Fork Key Changes
 
-- **Collection Pages**: Introduced a new "Collection" page type for better organization in the sidebar.
+- **Collection Pages**: Introduced a new "Collection" page type for better organization in the sidebar, with real-time TOC reordering.
 - **Page Locking System**: Improved lock UI (including a custom lock banner) and added hierarchical lock cascading from parent "collections".
-- **Typography & Styling**: Changed global font to *Lora* and increased body text size for a cleaner reading experience.
-- **Enhanced Editor**: Allowed block nesting inside lists and customized `Shift-Enter` behavior.
+- **Typography & Styling**: Changed global font to *Lora*, increased body text size, and adjusted list margins for a cleaner reading experience.
+- **Enhanced Editor**: Allowed block nesting inside lists, customized `Shift-Enter` behavior, and removed persistent selection highlights in read-only mode.
 - **UI Tweaks**: Added sidebar popups, refined page padding, and removed unused conversion options for a simpler interface.
 - **Smart Block Conversion**: Added a universal `Turn Into` drag-handle menu to seamlessly convert between blocks (e.g., Quotes to Callouts) while preserving content.
 - **Smart Backspace for Lists**: Intelligently merges text paragraphs or lifts complex blocks (like Callouts) out of lists when pressing backspace, without deleting the parent bullet.
 - **Todo Enhancements**: Replaced strikethrough on checked to-dos with an elegant opacity reduction effect.
+- **Footnotes Support**: Added a footnotes extension with click-to-scroll, interactive tooltips, and an inline bubble menu.
+- **Heading Numbering**: Implemented automatic and progressive numbering for headings (H1, H2, H3) that can be easily toggled via the block menu.
+- **Math Block Fixes**: Improved the keyboard navigation in math blocks and inline math (e.g., proper Escape/Enter behavior and arrow key constraints).
+- **CI/CD & Docker**: Fully optimized Dockerfile for caching and established a GitHub Actions workflow to build and push the Docker image automatically to GHCR.
 
 ---
 
