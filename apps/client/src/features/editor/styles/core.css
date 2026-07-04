@@ -7,6 +7,7 @@
 }
 
 .ProseMirror {
+  counter-reset: h1-counter;
   background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
   color: light-dark(var(--mantine-color-default-color), var(--mantine-color-white));
   font-size: var(--mantine-font-size-md);
@@ -83,6 +84,32 @@
   h3 {
     font-size: 1.25rem;
     margin-top: 1.25rem;
+  }
+
+  h1[data-numbered="true"] {
+    counter-increment: h1-counter;
+    counter-reset: h2-counter;
+  }
+  h1[data-numbered="true"]::before {
+    content: counter(h1-counter) ". ";
+    margin-right: 0.2em;
+  }
+
+  h2[data-numbered="true"] {
+    counter-increment: h2-counter;
+    counter-reset: h3-counter;
+  }
+  h2[data-numbered="true"]::before {
+    content: counter(h1-counter) "." counter(h2-counter) " ";
+    margin-right: 0.2em;
+  }
+
+  h3[data-numbered="true"] {
+    counter-increment: h3-counter;
+  }
+  h3[data-numbered="true"]::before {
+    content: counter(h1-counter) "." counter(h2-counter) "." counter(h3-counter) " ";
+    margin-right: 0.2em;
   }
 
   h4,

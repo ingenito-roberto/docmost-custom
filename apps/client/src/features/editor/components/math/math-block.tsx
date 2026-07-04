@@ -6,7 +6,7 @@ import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import { ActionIcon, Flex, Popover, Stack, Textarea } from "@mantine/core";
 import classes from "./math.module.css";
 import { v4 } from "uuid";
-import { IconTrashX } from "@tabler/icons-react";
+import { IconTrashX, IconPencil } from "@tabler/icons-react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useTranslation } from "react-i18next";
 
@@ -55,17 +55,22 @@ export default function MathBlockView(props: NodeViewProps) {
     }
   }, [debouncedPreview]);
 
-  useEffect(() => {
-    const pos = getPos();
-    const { from, to } = editor.state.selection;
-    const nodeSelected = props.selected && from === pos && to === pos + node.nodeSize;
-    setIsEditing(nodeSelected);
-    if (nodeSelected) setPreview(node.attrs.text);
-  }, [props.selected]);
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEditing(true);
+    setPreview(node.attrs.text);
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!isEditing && editor.isEditable) {
+      editor.commands.focus(getPos() + node.nodeSize);
+    }
+  };
 
   return (
     <Popover
       opened={isEditing && editor.isEditable}
+      onChange={setIsEditing}
       trapFocus
       position="top"
       shadow="md"
@@ -77,6 +82,7 @@ export default function MathBlockView(props: NodeViewProps) {
       <Popover.Target>
         <NodeViewWrapper
           data-katex="true"
+          onClick={handleClick}
           className={[
             classes.mathBlock,
             props.selected ? classes.selected : "",
@@ -102,6 +108,14 @@ export default function MathBlockView(props: NodeViewProps) {
             <div>{t("Empty equation")}</div>
           )}
           {error && <div>{t("Invalid equation")}</div>}
+
+          {!isEditing && editor.isEditable && (
+            <div className={classes.editButtonContainer}>
+              <ActionIcon variant="default" size="sm" onClick={handleEdit}>
+                <IconPencil size={14} />
+              </ActionIcon>
+            </div>
+          )}
         </NodeViewWrapper>
       </Popover.Target>
       <Popover.Dropdown>
@@ -120,28 +134,12 @@ export default function MathBlockView(props: NodeViewProps) {
             }}
             onKeyDown={(e) => {
               if (e.key === "Escape" || (e.key === "Enter" && !e.shiftKey)) {
+                e.preventDefault();
+                setIsEditing(false);
                 return editor.commands.focus(getPos() + node.nodeSize);
               }
 
-              if (!textAreaRef.current) return;
 
-              const { selectionStart, selectionEnd } = textAreaRef.current;
-
-              if (
-                (e.key === "ArrowLeft" || e.key === "ArrowUp") &&
-                selectionStart === selectionEnd &&
-                selectionStart === 0
-              ) {
-                editor.commands.focus(getPos() - 1);
-              }
-
-              if (
-                (e.key === "ArrowRight" || e.key === "ArrowDown") &&
-                selectionStart === selectionEnd &&
-                selectionStart === textAreaRef.current?.value.length
-              ) {
-                editor.commands.focus(getPos() + node.nodeSize);
-              }
             }}
             onChange={(e) => {
               setPreview(e.target.value);

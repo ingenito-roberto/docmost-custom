@@ -106,28 +106,12 @@ export default function MathInlineView(props: NodeViewProps) {
             placeholder={"E = mc^2"}
             onKeyDown={(e) => {
               if (e.key === "Escape" || (e.key === "Enter" && !e.shiftKey)) {
+                e.preventDefault();
+                setIsEditing(false);
                 return editor.commands.focus(getPos() + node.nodeSize);
               }
 
-              if (!textAreaRef.current) return;
 
-              const { selectionStart, selectionEnd } = textAreaRef.current;
-
-              if (
-                e.key === "ArrowLeft" &&
-                selectionStart === selectionEnd &&
-                selectionStart === 0
-              ) {
-                editor.commands.focus(getPos());
-              }
-
-              if (
-                e.key === "ArrowRight" &&
-                selectionStart === selectionEnd &&
-                selectionStart === textAreaRef.current.value.length
-              ) {
-                editor.commands.focus(getPos() + node.nodeSize);
-              }
             }}
             onChange={(e) => {
               setPreview(e.target.value);

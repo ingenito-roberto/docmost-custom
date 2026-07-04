@@ -143,6 +143,7 @@ export const mainExtensions = [
     },
     codeBlock: false,
     code: false,
+    listItem: false,
   }),
   // Override TipTap's Code extension to fix the inline code input rule.
   // The upstream regex /(^|[^`])`([^`]+)`(?!`)$/ captures the character

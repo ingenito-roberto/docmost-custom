@@ -22,6 +22,7 @@
 
 .mathBlock {
     display: block;
+    position: relative;
     text-align: center;
     padding: 0.05rem;
     white-space: pre-wrap;
@@ -49,5 +50,17 @@
     &.error {
         color: light-dark(var(--mantine-color-red-8), var(--mantine-color-red-7));
         background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-gray-8));
+    }
+
+    .editButtonContainer {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    &:hover .editButtonContainer {
+        opacity: 1;
     }
 }

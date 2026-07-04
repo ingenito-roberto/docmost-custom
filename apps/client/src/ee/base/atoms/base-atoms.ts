@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { atomFamily } from "jotai/utils";
+import { atomFamily } from "jotai-family";
 import { EditingCell, FocusedCell } from "@/ee/base/types/base.types";
 
 // Atoms are scoped per-base via `pageId` so that two BaseTable instances on

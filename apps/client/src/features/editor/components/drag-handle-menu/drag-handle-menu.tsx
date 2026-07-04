@@ -268,6 +268,15 @@ export function DragHandleMenu({ editor, anchorRect, onClose }: DragHandleMenuPr
     };
   }, [onClose]);
 
+  const isHeading = editor && isEditorReady(editor) && editor.isActive("heading");
+  const isNumbered = isHeading ? editor.getAttributes("heading").numbered !== false : false;
+
+  const handleToggleNumbering = useCallback(() => {
+    if (!isEditorReady(editor)) return;
+    editor.chain().focus().toggleHeadingNumbered().run();
+    onClose();
+  }, [editor, onClose]);
+
   const handleDelete = useCallback(() => {
     if (!isEditorReady(editor)) return;
     editor.chain().focus().deleteSelection().run();
@@ -366,6 +375,16 @@ export function DragHandleMenu({ editor, anchorRect, onClose }: DragHandleMenuPr
         <IconClipboard size={15} className={classes.itemIcon} />
         {t("Copy content")}
       </button>
+
+      {isHeading && (
+        <>
+          <div className={classes.divider} />
+          <button className={classes.item} onClick={handleToggleNumbering}>
+            <IconListNumbers size={15} className={classes.itemIcon} />
+            {isNumbered ? t("Remove numbering") : t("Add numbering")}
+          </button>
+        </>
+      )}
 
       <div className={classes.divider} />
 
