@@ -7,6 +7,8 @@
   border: 1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4));
   background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
   box-shadow: 0 2px 12px light-dark(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.35));
+  position: relative;
+  z-index: 100;
 }
 
 .toolbar :global(.mantine-ActionIcon-root) {

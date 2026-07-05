@@ -1,5 +1,6 @@
 import classes from "@/features/editor/styles/editor.module.css";
 import React, { useEffect } from "react";
+import { useStickyHeadings } from "@/features/editor/hooks/use-sticky-headings";
 import { TitleEditor } from "@/features/editor/title-editor";
 import PageEditor from "@/features/editor/page-editor";
 import {
@@ -85,6 +86,8 @@ export function FullEditor({
       defaultEditModeApplied = true;
     }
   }, [userPageEditMode, setCurrentPageEditMode]);
+
+  useStickyHeadings();
 
   return (
     <Container

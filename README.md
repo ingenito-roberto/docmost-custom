@@ -22,6 +22,7 @@
 - **Todo Enhancements**: Replaced strikethrough on checked to-dos with an elegant opacity reduction effect.
 - **Footnotes Support**: Added a footnotes extension with click-to-scroll, interactive tooltips, and an inline bubble menu.
 - **Heading Numbering**: Implemented automatic and progressive numbering for headings (H1, H2, H3) that can be easily toggled via the block menu.
+- **Sticky Headings**: Implemented progressive and hierarchical sticky headings that elegantly stack while scrolling, toggleable via Account Preferences.
 - **Math Block Fixes**: Improved the keyboard navigation in math blocks and inline math (e.g., proper Escape/Enter behavior and arrow key constraints).
 - **CI/CD & Docker**: Fully optimized Dockerfile for caching and established a GitHub Actions workflow to build and push the Docker image automatically to GHCR.
 

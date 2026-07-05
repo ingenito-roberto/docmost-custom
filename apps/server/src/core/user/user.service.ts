@@ -69,6 +69,14 @@ export class UserService {
       );
     }
 
+    if (typeof updateUserDto.stickyHeadings !== 'undefined') {
+      return this.userRepo.updatePreference(
+        userId,
+        'stickyHeadings',
+        updateUserDto.stickyHeadings,
+      );
+    }
+
     const notificationSettings: Record<string, NotificationSettingKey> = {
       notificationPageUpdates: 'page.updated',
       notificationPageUserMention: 'page.userMention',
