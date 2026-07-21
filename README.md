@@ -1,3 +1,9 @@
+> **⚠️ Fork Personalizzato**
+>
+> Questo è un fork personalizzato di [Docmost](https://github.com/docmost/docmost), deployato nel mio homelab come wiki e piattaforma di documentazione. Di seguito sono elencate le modifiche apportate rispetto al progetto originale.
+
+---
+
 <div align="center">
     <h1><b>Docmost</b></h1>
     <p>
@@ -14,7 +20,7 @@
 
 - **Collection Pages**: Introduced a new "Collection" page type for better organization in the sidebar, with real-time TOC reordering.
 - **Page Locking System**: Improved lock UI (including a custom lock banner) and added hierarchical lock cascading from parent "collections".
-- **Typography & Styling**: Changed global font to *Lora*, increased body text size, and adjusted list margins for a cleaner reading experience.
+- **Typography & Styling**: Changed global font to _Lora_, increased body text size, and adjusted list margins for a cleaner reading experience.
 - **Enhanced Editor**: Allowed block nesting inside lists, customized `Shift-Enter` behavior, and removed persistent selection highlights in read-only mode.
 - **UI Tweaks**: Added sidebar popups, refined page padding, and removed unused conversion options for a simpler interface.
 - **Smart Block Conversion**: Added a universal `Turn Into` drag-handle menu to seamlessly convert between blocks (e.g., Quotes to Callouts) while preserving content.
@@ -54,27 +60,32 @@ To get started with Docmost, please refer to our [documentation](https://docmost
 </p>
 
 ### License
+
 Docmost core is licensed under the open-source AGPL 3.0 license.  
-Enterprise features are available under an enterprise license (Enterprise Edition).  
+Enterprise features are available under an enterprise license (Enterprise Edition).
 
 All files in the following directories are licensed under the Docmost Enterprise license defined in `packages/ee/License`.
-  - apps/server/src/ee
-  - apps/client/src/ee
-  - packages/ee
+
+- apps/server/src/ee
+- apps/client/src/ee
+- packages/ee
 
 ### Contributing
 
 See the [development documentation](https://docmost.com/docs/self-hosting/development)
 
 ## Thanks
+
 Special thanks to;
 
 <img width="100" alt="Crowdin" src="https://github.com/user-attachments/assets/a6c3d352-e41b-448d-b6cd-3fbca3109f07" />
 
 [Crowdin](https://crowdin.com/) for providing access to their localization platform.
 
-
 <img width="48" alt="Algolia-mark-square-white" src="https://github.com/user-attachments/assets/6ccad04a-9589-4965-b6a1-d5cb1f4f9e94" />
 
 [Algolia](https://www.algolia.com/) for providing full-text search to the docs.
 
+## 🔗 Progetti Correlati
+
+- [Homelab Infrastructure](https://github.com/roberto-ingenito-home-lab/server-raspberry-pi) — Infrastruttura server e deployment Docker
